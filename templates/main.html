@@ -1,0 +1,26 @@
+<!-- main.html -- главная страница -->
+{% extends 'base.html' %}
+{% block title %} Главная страница {% endblock %}
+{% block content %}
+<!-- источник: https://getbootstrap.com/docs/4.5/content/typography/#naming-a-source -->
+<blockquote class="blockquote text-center">
+   <p class="mb-0"> “Even bad coffee is better than no coffee at all.” </p>
+   <footer class="blockquote-footer"> David Lynch
+   </footer>
+</blockquote>
+<br>
+<br>
+<p>
+   Данный сайт посвящен лингвистическому исследованию текстов новостей про кино.
+</p>
+<p>
+   Какие части речи чаще всего встречаются в таких новостных сводках? 
+   А какие словосочетания наиболее частотны?
+</p>
+<p>
+   Переходите в раздел «Статистика» и изучайте кинотренды вместе с нами! 
+</p>
+<p>   
+   Все новости были собраны с сайта <a href="https://www.kinonews.ru/" style="color: #db1515">https://www.kinonews.ru/</a>
+</p>
+{% endblock %}

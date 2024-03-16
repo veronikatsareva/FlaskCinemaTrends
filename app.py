@@ -42,6 +42,28 @@ def main():
 @app.route("/stats")
 def stats():
     try:
+        # получение мета-данных из файла
+        meta = open("meta.txt", "r").readlines()
+        news_amount = meta[0]
+        token_amount = meta[1]
+        median = meta[2]
+
+        # так как все было записано в файл как строка, в том числе и список
+        # из кортежей, функция eval позволяет превратить эти строки
+        # обратно в контейнеры
+        bigramms = eval(meta[3])
+        trigramms = eval(meta[4])
+
+        content = [news_amount, token_amount, median, bigramms, trigramms]
+
+        return render_template("stats.html", content=content)
+    except FileNotFoundError:
+        return render_template("error.html")
+
+
+# функция для подсчета статистики
+def data_processing():
+    try:
         df = pd.read_csv("data.csv")
 
         # количество собранных новостей
@@ -137,10 +159,16 @@ def stats():
         # все собранные метаданные
         content = [news_amount, token_amount, np.median(token_avg), bigramms, trigramms]
 
-        # рендер страницы со статистикой
-        return render_template("stats.html", content=content)
+        # запись полученных статистических данных в файл
+        meta = open("meta.txt", "w")
+        for record in content:
+            meta.write(f"{record}\n")
+        meta.close()
+
+        return 0
+
     except FileNotFoundError:
-        return render_template("error.html")
+        return 1
 
 
 # рендер страницы для сбора отзывов о сайте
@@ -179,6 +207,9 @@ def data_collection():
     # создание датафрейма из полученных данных
     new_df = pd.DataFrame(cinema_news)
     new_df.to_csv("data.csv", mode="a", index=False, header=False)
+
+    # пересчет статистики в связи с новыми данными
+    data_processing()
 
     return 0
 

@@ -55,4 +55,6 @@ pip3 install nltk
 pip3 install pymystem3
 pip3 install pymorphy2
 pip3 install numpy
+pip3 install torch
+pip3 install transformers
 ```

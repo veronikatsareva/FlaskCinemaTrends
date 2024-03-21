@@ -10,6 +10,7 @@ nltk.download("stopwords")
 from nltk.corpus import stopwords
 
 russian_stopwords = set(stopwords.words("russian"))
+english_stopwords = set(stopwords.words("english"))
 
 
 # функция для препроцессинга текста: удаление стоп-слов и не слов
@@ -80,24 +81,28 @@ def ner_stats(data):
         # сбор индексов NER-токенов
         ner_tokens = []
         for ner in ner_entities:
-            ner_tokens.append([ner['entity'], ner['start'], ner['end']])
+            ner_tokens.append([ner["entity"], ner["start"], ner["end"]])
 
         # нахождение именнованных сущностей в тексте по индексам токенов
         i = 0
         while i < len(ner_tokens) - 1:
             left = ner_tokens[i][1]
             right = ner_tokens[i][2]
-            tag = ner_tokens[i][0]
             # поиск границ слова, состоящего из индексов NER-токнов
             while i < len(ner_tokens) - 1 and ner_tokens[i + 1][1] == ner_tokens[i][2]:
                 right = ner_tokens[i + 1][2]
                 i += 1
-            # добавление NER в stats
+            # добавление NER в stats, если оно не входит в стоп-слова
+            # русского или английского языков
             ner_word = text[left:right]
-            if ner_word not in ner_stats:
-                ner_stats[ner[0]] = 0
-            ner_stats[ner[0]] += 1
+            if (
+                ner_word.isalpha()
+                and ner_word.lower() not in russian_stopwords
+                and ner_word.lower() not in english_stopwords
+            ):
+                if ner_word not in ner_stats:
+                    ner_stats[ner_word] = 0
+                ner_stats[ner_word] += 1
             i += 1
 
     return ner_stats
-

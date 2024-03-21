@@ -160,11 +160,18 @@ def data_processing():
         # вызов функции для поиска NER в текстах
         stats = data_analysis.ner_stats(df["text"])
         sorted_ner = []
-        for ner in sorted(stats, key=lambda x : stats[x], reverse=True):
+        for ner in sorted(stats, key=lambda x: stats[x], reverse=True):
             sorted_ner.append(ner)
 
         # все собранные метаданные
-        content = [news_amount, token_amount, np.median(token_avg), bigramms, trigramms, sorted_ner[:20]]
+        content = [
+            news_amount,
+            token_amount,
+            np.median(token_avg),
+            bigramms,
+            trigramms,
+            sorted_ner[:20],
+        ]
 
         # запись полученных статистических данных в файл
         meta = open("meta.txt", "w")

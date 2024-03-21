@@ -50,6 +50,13 @@
 {% endfor %}
 <br>
 <br>
+<h4 align="center"> Топ-20 частотных NER </h4>
+<br>
+{% for ner in content[6] %}
+<li>{{ ner }}</li>
+{% endfor %}
+<br>
+<br>
 <h4 align="center"> Графики </h4>
 <!-- источник: https://getbootstrap.com/docs/4.5/components/carousel/ -->
 <div id="CinemaCarousel" class="carousel slide" data-ride="carousel">

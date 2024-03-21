@@ -53,8 +53,9 @@ def stats():
         # обратно в контейнеры
         bigramms = eval(meta[3])
         trigramms = eval(meta[4])
+        ner_entities = eval(meta[5])
 
-        content = [news_amount, token_amount, median, bigramms, trigramms]
+        content = [news_amount, token_amount, median, bigramms, trigramms, ner_entities]
 
         return render_template("stats.html", content=content)
     except FileNotFoundError:
@@ -96,7 +97,7 @@ def data_processing():
         plt.imshow(wordcloud)
         plt.axis("off")
         plt.title("Облако слов. Тэги")
-        plt.savefig(f"static/wordcloud_tags.png", dpi=300)
+        plt.savefig("static/wordcloud_tags.png", dpi=300)
         plt.close()
 
         # массив для хранения длин токенов
@@ -123,7 +124,7 @@ def data_processing():
         plt.imshow(wordcloud)
         plt.axis("off")
         plt.title("Облако слов. Леммы")
-        plt.savefig(f"static/wordcloud_lemmas.png", dpi=300)
+        plt.savefig("static/wordcloud_lemmas.png", dpi=300)
         plt.close()
 
         # вызов функции для сбора данных по частеречной разметке
@@ -147,7 +148,7 @@ def data_processing():
             colors=["#e83b4e", "#c60e36", "#a50020", "#840009", "#650000"],
             autopct="%1.1f%%",
         )
-        plt.savefig(f"static/pie_pos.png", dpi=300)
+        plt.savefig("static/pie_pos.png", dpi=300)
         plt.close()
 
         # вызов функции для поиска биграмм
@@ -156,8 +157,14 @@ def data_processing():
         # вызов функции для поиска триграмм
         trigramms = data_analysis.trigramms(lemmas_list)
 
+        # вызов функции для поиска NER в текстах
+        stats = data_analysis.ner_stats(df["text"])
+        sorted_ner = []
+        for ner in sorted(stats, key=lambda x : stats[x], reverse=True):
+            sorted_ner.append(ner)
+
         # все собранные метаданные
-        content = [news_amount, token_amount, np.median(token_avg), bigramms, trigramms]
+        content = [news_amount, token_amount, np.median(token_avg), bigramms, trigramms, sorted_ner[:20]]
 
         # запись полученных статистических данных в файл
         meta = open("meta.txt", "w")

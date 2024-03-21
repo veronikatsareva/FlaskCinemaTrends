@@ -4,6 +4,7 @@ from pymystem3 import Mystem
 from pymorphy2 import MorphAnalyzer
 import nltk
 from nltk.collocations import *
+from transformers import pipeline
 
 nltk.download("stopwords")
 from nltk.corpus import stopwords
@@ -62,3 +63,41 @@ def trigramms(data):
 
     # топ-10 самых частотных триграмм
     return sorted(finder.nbest(trigram_measures.raw_freq, 10))
+
+
+# функция для подсчета статистики по NER
+def ner_stats(data):
+    # модель для классификации именованных сущностей
+    ner_classifier = pipeline("ner", model="Babelscape/wikineural-multilingual-ner")
+
+    # словарь для статистики
+    ner_stats = {}
+
+    for text in data:
+        # нахождение именнованных сущностей в тексте
+        ner_entities = ner_classifier(text)
+
+        # сбор индексов NER-токенов
+        ner_tokens = []
+        for ner in ner_entities:
+            ner_tokens.append([ner['entity'], ner['start'], ner['end']])
+
+        # нахождение именнованных сущностей в тексте по индексам токенов
+        i = 0
+        while i < len(ner_tokens) - 1:
+            left = ner_tokens[i][1]
+            right = ner_tokens[i][2]
+            tag = ner_tokens[i][0]
+            # поиск границ слова, состоящего из индексов NER-токнов
+            while i < len(ner_tokens) - 1 and ner_tokens[i + 1][1] == ner_tokens[i][2]:
+                right = ner_tokens[i + 1][2]
+                i += 1
+            # добавление NER в stats
+            ner_word = text[left:right]
+            if ner_word not in ner_stats:
+                ner_stats[ner[0]] = 0
+            ner_stats[ner[0]] += 1
+            i += 1
+
+    return ner_stats
+

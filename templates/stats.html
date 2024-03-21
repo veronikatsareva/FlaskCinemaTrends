@@ -36,25 +36,38 @@
 <br>
 <h3 align="center"> Статистика по текстам </h3>
 <br>
-<h4 align="center"> Топ-10 частотных 2-грамм </h4>
+<h4 align="center"> <u>Топ-10 частотных 2-грамм</u> </h4>
 <br>
 {% for bigramm in content[3] %}
 <li>{{ bigramm }}</li>
 {% endfor %}
 <br>
 <br>
-<h4 align="center"> Топ-10 частотных 3-грамм </h4>
+<h4 align="center"> <u>Топ-10 частотных 3-грамм</u> </h4>
 <br>
 {% for trigramm in content[4] %}
 <li>{{ trigramm }}</li>
 {% endfor %}
 <br>
 <br>
-<h4 align="center"> Топ-20 частотных NER </h4>
+<h4 align="center"> <u>Топ-20 частотных NER</u> </h4>
 <br>
-{% for ner in content[5] %}
-<li>{{ ner }}</li>
-{% endfor %}
+<table class="table table-bordered">
+   <thead>
+      <tr>
+         <td>
+            {% for ner in content[5][:10]: %}
+            <li>{{ ner }}</li>
+            {% endfor %}
+         </td>
+         <td>
+            {% for ner in content[5][10:]: %}
+            <li>{{ ner }}</li>
+            {% endfor %}
+         </td>
+      </tr>
+   </thead>
+</table>
 <br>
 <br>
 <h4 align="center"> Графики </h4>
